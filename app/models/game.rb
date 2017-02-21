@@ -32,7 +32,7 @@ class Game
     end
   end
 
-  def initialize(id:, board:, score:, game_over:)
+  def initialize(id:, board:, score: 0, game_over: false)
     @id        = id
     @board     = board
     @score     = score
@@ -41,5 +41,22 @@ class Game
 
   def save
     Game[@id] = self
+  end
+
+  def game_over?
+    @game_over == true
+  end
+
+  def as_json(*)
+    {
+      id: @id,
+      score: @score,
+      game_over: @game_over,
+      board: show_board
+    }
+  end
+
+  def show_board
+    game_over? ? @board.tiles : @board.revealed
   end
 end

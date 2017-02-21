@@ -50,5 +50,9 @@ class Game
       when :hidden then '?'
       end
     end
+
+    def as_json(*)
+      to_s
+    end
   end
 end

@@ -3,6 +3,7 @@ class Game
   # 2D grid of tiles which may be a bomb, number, or unknown
   class Board
     private_class_method :new
+    attr_reader :tiles, :revealed
 
     WIDTH = HEIGHT = SIZE = 5
 
