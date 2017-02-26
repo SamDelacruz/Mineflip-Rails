@@ -33,6 +33,17 @@ class Game
       @revealed = revealed
     end
 
+    def get_tile(x, y)
+      @tiles[y][x]
+    rescue
+      return nil
+    end
+
+    def reveal_tile(x, y)
+      tile = get_tile x, y
+      @revealed[y][x] = tile unless tile.nil?
+    end
+
     def to_s
       tiles = @tiles.map { |r| r.join(',') }.join("\n")
       revealed = @revealed.map { |r| r.join(',') }.join("\n")

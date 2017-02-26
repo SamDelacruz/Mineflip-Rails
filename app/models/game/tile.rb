@@ -22,6 +22,8 @@ class Game
           r -= w
         end
       end
+
+      attr_reader :TYPES
     end
 
     def initialize(type:)
