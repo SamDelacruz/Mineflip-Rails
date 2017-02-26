@@ -1,4 +1,5 @@
-# Mineflip Rails API
+# Mineflip Rails API [![Build Status](https://travis-ci.org/SamDelacruz/Mineflip-Rails.svg?branch=master)](https://travis-ci.org/SamDelacruz/Mineflip-Rails)
+
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
