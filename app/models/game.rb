@@ -62,11 +62,12 @@ class Game
 
   def reveal_tile(x, y)
     tile = @board.reveal_tile(x, y)
-    @game_over = tile.bomb? unless tile.nil?
+    @game_over = (tile.bomb? unless tile.nil?) || @game_over
     update_score(tile) unless tile.nil?
   end
 
   def update_score(tile)
+    return @score if @game_over
     @score = @score.zero? ? tile.value : tile.value * @score
   end
 end
