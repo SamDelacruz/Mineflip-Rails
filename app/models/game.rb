@@ -52,7 +52,8 @@ class Game
       id: @id,
       score: @score,
       game_over: @game_over,
-      board: show_board
+      board: show_board,
+      hints: @board.hints
     }
   end
 
@@ -61,9 +62,10 @@ class Game
   end
 
   def reveal_tile(x, y)
+    return unless @board.hidden?(x, y)
     tile = @board.reveal_tile(x, y)
-    @game_over = (tile.bomb? unless tile.nil?) || @game_over
     update_score(tile) unless tile.nil?
+    @game_over = (tile.bomb? unless tile.nil?) || @game_over
   end
 
   def update_score(tile)
