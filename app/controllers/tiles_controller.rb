@@ -20,7 +20,7 @@ class TilesController < ApplicationController
     game.reveal_tile(tile_x, tile_y)
     game.save
     render json: game, status: :ok
-  rescue => e
-    render json: { message: e.message }, status: :unprocessable_entity
+  #rescue => e
+    #render json: { message: e.message }, status: :unprocessable_entity
   end
 end

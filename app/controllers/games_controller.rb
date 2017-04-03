@@ -3,10 +3,11 @@ class GamesController < ApplicationController
   skip_before_filter :verify_authenticity_token
   def create
     game = start_game
-    render json: game, status: :created, location: game_url(id: game.id)
+    render json: game, status: :created
   rescue => e
     render json: { message: e.message }, status: :internal_server_error
   end
+
 
   def show
     game = Game.find_by_id params[:id].to_i
