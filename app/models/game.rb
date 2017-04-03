@@ -32,11 +32,12 @@ class Game
     end
   end
 
-  def initialize(id:, board:, score: 0, game_over: false)
+  def initialize(id:, board:, score: 0, game_over: false, game_won: false)
     @id        = id
     @board     = board
     @score     = score
     @game_over = game_over
+    @game_won  = game_won
   end
 
   def save
@@ -52,20 +53,21 @@ class Game
       id: @id,
       score: @score,
       game_over: @game_over,
-      board: show_board,
+      game_won: @game_won,
+      board: @board.tiles,
       hints: @board.hints
     }
-  end
-
-  def show_board
-    game_over? ? @board.tiles : @board.revealed
   end
 
   def reveal_tile(x, y)
     return unless @board.hidden?(x, y)
     tile = @board.reveal_tile(x, y)
-    update_score(tile) unless tile.nil?
-    @game_over = (tile.bomb? unless tile.nil?) || @game_over
+
+    return if tile.nil?
+
+    update_score(tile)
+    @board.reveal_all if tile.mine? && !@game_over
+    @game_over = tile.mine? || @game_over
   end
 
   def update_score(tile)

@@ -5,11 +5,10 @@ class Game
   # based on given set of type weights.
   class Tile
     TYPES = {
-      bomb: 0,
+      mine: 0,
       one: 1,
       two: 2,
-      three: 3,
-      hidden: 0
+      three: 3
     }.freeze
 
     class << self
@@ -18,7 +17,7 @@ class Game
         tw = weights.values.reduce { |sum, w| sum + w }.to_f
         nweights = weights.map { |k, w| [k, w / tw] }.to_h
         nweights.each do |k, w|
-          return new(type: k) if r < w
+          return new(type: k, hidden: true) if r < w
           r -= w
         end
       end
@@ -26,9 +25,10 @@ class Game
       attr_reader :TYPES
     end
 
-    def initialize(type:)
+    def initialize(type:, hidden:)
       raise "Invalid tile type #{type}" unless TYPES.key? type
       @type = type
+      @hidden = hidden
     end
 
     def value
@@ -36,20 +36,25 @@ class Game
     end
 
     def hidden?
-      @type == :hidden
+      @hidden
     end
 
-    def bomb?
-      @type == :bomb
+    def reveal
+      @hidden = false
+      self
+    end
+
+    def mine?
+      @type == :mine
     end
 
     def to_s
+      return '?' if hidden?
       case @type
-      when :bomb   then 'x'
+      when :mine   then '*'
       when :one    then '1'
       when :two    then '2'
       when :three  then '3'
-      when :hidden then '?'
       end
     end
 

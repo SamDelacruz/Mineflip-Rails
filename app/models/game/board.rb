@@ -8,7 +8,7 @@ class Game
     WIDTH = HEIGHT = SIZE = 5
 
     WEIGHTS = {
-      bomb: 3,
+      mine: 3,
       one:  4,
       two:  2,
       three: 1
@@ -20,17 +20,12 @@ class Game
           Array.new(WIDTH) { Game::Tile.random(WEIGHTS) }
         end
 
-        revealed = Array.new(HEIGHT) do
-          Array.new(WIDTH) { Game::Tile.new(type: :hidden) }
-        end
-
-        new tiles: tiles, revealed: revealed
+        new tiles: tiles
       end
     end
 
-    def initialize(tiles:, revealed:)
-      @tiles    = tiles
-      @revealed = revealed
+    def initialize(tiles:)
+      @tiles = tiles
     end
 
     def get_tile(x, y)
@@ -40,20 +35,18 @@ class Game
     end
 
     def hidden?(x, y)
-      @revealed[y][x].hidden?
+      @tiles[y][x].hidden?
     rescue
       return false
     end
 
     def reveal_tile(x, y)
       tile = get_tile x, y
-      @revealed[y][x] = tile unless tile.nil?
+      tile.reveal unless tile.nil?
     end
 
     def to_s
-      tiles = @tiles.map { |r| r.join(',') }.join("\n")
-      revealed = @revealed.map { |r| r.join(',') }.join("\n")
-      "#{tiles}\n\n#{revealed}"
+      @tiles.map { |r| r.join(',') }.join("\n")
     end
 
     def hints
@@ -61,16 +54,26 @@ class Game
         rows = Array.new(HEIGHT) { { mines: 0, points: 0 } }
         cols = Array.new(WIDTH) { { mines: 0, points: 0 } }
 
-        @tiles.each_with_index do |row, j|
-          row.each_with_index do |tile, i|
-            rows[j][:mines] += 1 if tile.bomb?
-            cols[i][:mines] += 1 if tile.bomb?
-            rows[j][:points] += tile.value
-            cols[i][:points] += tile.value
-          end
-        end
+        set_hints(rows, cols)
 
         { rows: rows, cols: cols }
+      end
+    end
+
+    def set_hints(rows, cols)
+      @tiles.each_with_index do |row, j|
+        row.each_with_index do |tile, i|
+          rows[j][:mines] += 1 if tile.mine?
+          cols[i][:mines] += 1 if tile.mine?
+          rows[j][:points] += tile.value
+          cols[i][:points] += tile.value
+        end
+      end
+    end
+
+    def reveal_all
+      @tiles.each do |row|
+        row.each(&:reveal)
       end
     end
   end
