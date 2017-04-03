@@ -1,7 +1,6 @@
 # Top level game class, representing overall single game state
 # Class is store for game objects
 class Game
-  private_class_method :new
   attr_reader :id, :board, :score, :game_over
 
   @games = []

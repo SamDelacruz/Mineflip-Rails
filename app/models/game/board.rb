@@ -2,8 +2,7 @@ class Game
   # Class representing the gameboard
   # 2D grid of tiles which may be a bomb, number, or unknown
   class Board
-    private_class_method :new
-    attr_reader :tiles, :revealed
+    attr_accessor :tiles
 
     WIDTH = HEIGHT = SIZE = 5
 
@@ -43,6 +42,7 @@ class Game
     def reveal_tile(x, y)
       tile = get_tile x, y
       tile.reveal unless tile.nil?
+      tile
     end
 
     def to_s

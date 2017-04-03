@@ -11,6 +11,8 @@ class Game
       three: 3
     }.freeze
 
+    attr_accessor :type, :hidden
+
     class << self
       def random(weights)
         r = rand
