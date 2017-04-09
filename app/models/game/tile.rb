@@ -50,6 +50,10 @@ class Game
       @type == :mine
     end
 
+    def safe?
+      !mine?
+    end
+
     def to_s
       return '?' if hidden?
       case @type

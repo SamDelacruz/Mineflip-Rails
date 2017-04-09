@@ -1,7 +1,7 @@
 # Top level game class, representing overall single game state
 # Class is store for game objects
 class Game < ActiveRecord::Base
-  serialize :board, Game::Board
+  serialize :board, Game::BoardSerializer
 
   class << self
     def start
@@ -25,34 +25,47 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def game_over?
+  def lost?
     game_over == true
+  end
+
+  def won?
+    game_won == true
+  end
+
+  def over?
+    won? || lost?
   end
 
   def as_json(*)
     {
       id: id,
       score: score,
-      game_over: game_over?,
-      game_won: game_won?,
+      game_over: lost?,
+      game_won: won?,
       board: board.tiles,
       hints: board.hints
     }
   end
 
   def reveal_tile(x, y)
-    return unless board.hidden?(x, y)
+    return unless board.hidden?(x, y) || won?
     tile = board.reveal_tile(x, y)
 
-    return if tile.nil?
-
     update_score(tile)
-    board.reveal_all if tile.mine? && !game_over?
+
+    check_win
+
+    board.reveal_all if tile.mine? && !lost?
     self.game_over = tile.mine? || game_over
   end
 
+  def check_win
+    self.game_won = board.max_score == score
+  end
+
   def update_score(tile)
-    return score if game_over?
+    return score if won? || lost?
     self.score = score.zero? ? tile.value : tile.value * score
   end
 end

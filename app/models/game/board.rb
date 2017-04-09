@@ -20,8 +20,13 @@ class Game
           Array.new(WIDTH) { Game::Tile.random(WEIGHTS) }
         end
 
+        build(tiles)
+      end
+
+      def build(tiles)
         board = new
         board.tiles = tiles
+        board.max_score
         board
       end
     end
@@ -73,6 +78,12 @@ class Game
     def reveal_all
       @tiles.each do |row|
         row.each(&:reveal)
+      end
+    end
+
+    def max_score
+      @max_score ||= @tiles.flatten.reduce(1) do |s, t|
+        s * (t.value >= 1 ? t.value : 1)
       end
     end
   end
